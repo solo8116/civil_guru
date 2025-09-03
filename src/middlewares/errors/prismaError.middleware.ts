@@ -7,9 +7,13 @@ export class PrismaErrorMiddleware {
       switch (err.code) {
         case 'P2002':
           console.log(err);
+          const target = (err.meta?.target as string)
+            .split('_')
+            .slice(1, -1)
+            .join(' ');
           return res.status(409).json({
             success: false,
-            message: 'unique constraint violation',
+            message: `unique constraint violation on ${target}`,
           });
         case 'P2025':
           console.log(err);
