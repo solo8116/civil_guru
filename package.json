@@ -8,6 +8,7 @@
     "build": "tsc",
     "dev": "nodemon --files app.ts",
     "serve": "node build/app.js",
+    "db": "npx prisma generate && npx prisma db push",
     "format": "prettier --write \"src/**/*.{ts,js}\" \"*.ts\""
   },
   "keywords": [],
