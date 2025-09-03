@@ -28,4 +28,22 @@ export class LeadController {
       next(error);
     }
   }
+
+  async getAllLeads(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const spage = req.query.page as string;
+      let page: number | undefined;
+      if (spage && parseInt(spage)) {
+        page = parseInt(spage);
+      }
+      const response = await this.leadInteractor.getAllLeads(page);
+      res.status(201).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

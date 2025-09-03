@@ -20,5 +20,6 @@ export class LeadRouter {
       new ValidationMiddleware(CreateLeadDto).validate,
       this.leadController.createLead,
     );
+    this.router.get('/', this.leadController.getAllLeads);
   }
 }

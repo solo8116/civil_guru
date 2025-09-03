@@ -1,6 +1,7 @@
+import { TAKE_PAGES } from '../common/constants';
 import { CreateLeadDto } from '../common/dtos';
 import { LeadEntity } from '../entites';
-import { ILeadRepository, IResponse } from '../interfaces';
+import { ILeadRepository, IPaginatedData, IResponse } from '../interfaces';
 import { ILeadInteractor } from '../interfaces/lead/leadInteractor.interface';
 
 export class LeadInteractor implements ILeadInteractor {
@@ -46,6 +47,24 @@ export class LeadInteractor implements ILeadInteractor {
     return {
       success: true,
       message: 'lead created successfully',
+    };
+  }
+
+  async getAllLeads(
+    page: number = 1,
+  ): Promise<IResponse<IPaginatedData<LeadEntity>>> {
+    const result = await this.leadRepository.getAll(TAKE_PAGES, page);
+    const nextPage = result.totalPages > page ? page + 1 : null;
+    return {
+      success: true,
+      message: 'leads fetched successfully',
+      data: {
+        currentPage: page,
+        nextPage,
+        totalItems: result.totalItems,
+        totalPages: result.totalPages,
+        data: result.data,
+      },
     };
   }
 }
