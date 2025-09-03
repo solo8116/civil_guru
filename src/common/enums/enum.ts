@@ -26,3 +26,8 @@ export enum Source {
   COLD_CALL = 'Cold Call',
   SOCIAL_MEDIA = 'Social Media',
 }
+
+export enum FilterOperator {
+  AND = 'AND',
+  OR = 'OR',
+}

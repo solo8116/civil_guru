@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { LeadController } from '../controllers';
 import { ValidationMiddleware } from '../middlewares';
-import { CreateLeadDto } from '../common/dtos';
+import { CreateLeadDto, LeadFilterDto } from '../common/dtos';
 
 export class LeadRouter {
   public router: Router;
@@ -17,9 +17,14 @@ export class LeadRouter {
   initializeRoutes() {
     this.router.post(
       '/',
-      new ValidationMiddleware(CreateLeadDto).validate,
+      new ValidationMiddleware(CreateLeadDto, 'body').validate,
       this.leadController.createLead,
     );
     this.router.get('/', this.leadController.getAllLeads);
+    this.router.get(
+      '/filter',
+      new ValidationMiddleware(LeadFilterDto, 'query').validate,
+      this.leadController.filterLeads,
+    );
   }
 }

@@ -3,19 +3,25 @@ import { NextFunction, Request, Response } from 'express';
 import { plainToInstance } from 'class-transformer';
 import { MethodBinder } from '../utils';
 
-export class ValidationMiddleware {
-  private dtoClass: any;
+type TValidationConfig<T> = [
+  new (data: T) => object,
+  keyof Pick<Request, 'body' | 'query' | 'params'>,
+];
 
-  constructor(DtoClass: any) {
+export class ValidationMiddleware {
+  private validations: TValidationConfig<any>;
+
+  constructor(...validations: TValidationConfig<any>) {
     MethodBinder.bind(this);
-    this.dtoClass = DtoClass;
+    this.validations = validations;
   }
 
   async validate(req: Request, res: Response, next: NextFunction) {
     try {
-      const dto = plainToInstance(this.dtoClass, req.body);
-      await validateOrReject(dto, { whitelist: true });
-      req.body = dto;
+      const [DtoClass, target] = this.validations;
+      const instance = plainToInstance(DtoClass, req[target]);
+      await validateOrReject(instance, { whitelist: true });
+      Object.assign(req[target], instance);
       next();
     } catch (errors: any) {
       if (Array.isArray(errors) && errors[0] instanceof ValidationError) {

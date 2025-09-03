@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { LeadInteractor } from '../interactors';
 import { LeadRepository } from '../repositories';
 import { plainToInstance } from 'class-transformer';
-import { CreateLeadDto } from '../common/dtos';
+import { CreateLeadDto, LeadFilterDto } from '../common/dtos';
 import { MethodBinder } from '../utils';
 
 export class LeadController {
@@ -41,6 +41,20 @@ export class LeadController {
         page = parseInt(spage);
       }
       const response = await this.leadInteractor.getAllLeads(page);
+      res.status(201).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async filterLeads(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const dto = plainToInstance(LeadFilterDto, req.query);
+      const response = await this.leadInteractor.filterLead(dto);
       res.status(201).json(response);
     } catch (error) {
       next(error);
