@@ -41,7 +41,7 @@ export class LeadController {
         page = parseInt(spage);
       }
       const response = await this.leadInteractor.getAllLeads(page);
-      res.status(201).json(response);
+      res.status(200).json(response);
     } catch (error) {
       next(error);
     }
@@ -55,9 +55,10 @@ export class LeadController {
     try {
       const dto = plainToInstance(LeadFilterDto, req.query);
       const response = await this.leadInteractor.filterLead(dto);
-      res.status(201).json(response);
+      res.status(200).json(response);
     } catch (error) {
       next(error);
     }
   }
 }
+
